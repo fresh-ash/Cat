@@ -3,6 +3,7 @@ package com.mygdx.game.model;
 import com.badlogic.gdx.Gdx;
 import com.mygdx.game.model.entity.BaseObject;
 import com.mygdx.game.model.entity.Pill;
+import com.mygdx.game.model.entity.Virus;
 import com.mygdx.game.model.utils.Point;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class Board {
 
     ArrayList<BaseObject> freeElements;
     BaseObject[][] board;
+    ArrayList<BaseObject> renderedObjects;
     int boardWidth, boardHeight;
 
     Pill currentpPill;
@@ -23,6 +25,7 @@ public class Board {
         this.currentpPill = createPill();
         this.nextPill = createPill();
         this.freeElements = new ArrayList<BaseObject>();
+        this.renderedObjects = new ArrayList<BaseObject>();
     }
 
 
@@ -36,7 +39,10 @@ public class Board {
 
     public void setBoardElement(BaseObject object){
         Point point = object.getCoordinates();
-        board[point.getX()][point.getY()] = object;
+        if (this.isCellEmpty(point)){
+            board[point.getX()][point.getY()] = object;
+            this.renderedObjects.add(object);
+        }
     }
 
     public boolean isCellEmpty(Point point){
@@ -45,7 +51,7 @@ public class Board {
         int x = point.getX();
         int y = point.getY();
 
-        if ((x >= 0) && (y >= 0) && (x < this.boardWidth) && (y < boardHeight)){
+        if ((x >= 0) && (y >= 0) && (x < this.boardWidth) && (y < boardHeight) && board[x][y] == null){
             return true;
         }
         else return false;
@@ -105,12 +111,17 @@ public class Board {
         this.boardHeight = boardHeight;
     }
 
-    public BaseObject[][] getBoard() {
-        return board;
-    }
+    public ArrayList<BaseObject> getRenderedObj(){
+        for (int x = 0; x < this.boardWidth; x++) {
+            for (int y = 0; y < this.boardHeight; y++) {
+                BaseObject object = board[x][y];
+                if (object != null) {
+                    this.renderedObjects.add(object);
 
-    public void setBoard(BaseObject[][] board) {
-        this.board = board;
+                }
+            }
+        }
+        return this.renderedObjects;
     }
 
     public ArrayList<BaseObject> getFreeElements() {
@@ -120,6 +131,20 @@ public class Board {
     public void setFreeElements(ArrayList<BaseObject> freeElements) {
         this.freeElements = freeElements;
     }
+
+    public void fillBoard(int level){
+        int viruses = level * 10;
+        Point point;
+        while (viruses != 0){
+            point = Point.getRandomPoint(this.boardWidth - 1, this.boardHeight/2 + level);
+            if (this.isCellEmpty(point)){
+                this.setBoardElement(new Virus(point));
+                viruses -= 1;
+            }
+
+        }
+    }
+
 
     class Checker {
 

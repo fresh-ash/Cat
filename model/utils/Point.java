@@ -1,5 +1,7 @@
 package com.mygdx.game.model.utils;
 
+import java.util.Random;
+
 public class Point {
 
     private int x, y;
@@ -27,6 +29,12 @@ public class Point {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public static Point getRandomPoint(int maxX, int maxY){
+        Random random = new Random();
+        Point point = new Point(random.nextInt(maxX),random.nextInt(maxY));
+        return point;
     }
 
     @Override
