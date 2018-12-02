@@ -48,8 +48,8 @@ public class Board {
     }
 
     public void setBoardElement(BaseObject object){
-            objectManager.addToWillBeAddedToUpdatableObj(object);
-            objectManager.addToRenderedObj(object);
+            this.objectManager.addToWillBeAddedToUpdatableObj(object);
+            this.objectManager.addToRenderedObj(object);
             board[object.getCoordinates().getX()][object.getCoordinates().getY()] = object.getColor();
             prinBoard();
         }
@@ -80,10 +80,8 @@ public class Board {
     }
 
     public void setCurrentpPill(Pill currentpPill) {
-        this.currentpPill = currentpPill;
-        this.objectManager.addToRenderedObj(this.currentpPill.getA());
-        this.objectManager.addToRenderedObj(this.currentpPill.getB());
-        this.objectManager.addToWillBeAddedToUpdatableObj(this.currentpPill);
+            this.currentpPill = currentpPill;
+            this.objectManager.addToWillBeAddedToUpdatableObj(this.currentpPill);
     }
 
     public ObjectManager getObjectManager() {
@@ -157,6 +155,7 @@ public class Board {
         }
 
         void checkVerticalLines(){
+            
 
         }
 

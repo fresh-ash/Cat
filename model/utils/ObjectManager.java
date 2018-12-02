@@ -47,7 +47,9 @@ public class ObjectManager {
     //Updatable Objects
 
     public void addToUpdatableObj(Updatable obj) {
-        this.updatables.add(obj);
+        if (!isInUpdatableObj(obj)){
+            this.updatables.add(obj);
+        }
     }
     public void addToUpdatableObj(ArrayList<Updatable> list) {
         this.updatables.addAll(list);
@@ -108,8 +110,10 @@ public class ObjectManager {
         if (!this.isInUpdatableObj(obj)){
             this.addToWillBeAddedToUpdatableObj(obj);
         }
-        this.addToRenderedObj((Rendered) obj);
-        this.freeElements.add(obj);
+        if (!this.isInFreeElements(obj)){
+            this.addToRenderedObj((Rendered) obj);
+            this.freeElements.add(obj);
+        }
     }
     public void addToFreeElements(ArrayList<Updatable> list){
         this.freeElements.addAll(list);

@@ -21,6 +21,7 @@ public class FreeBlockState extends BaseBlockState {
             block.getBoard().getObjectManager().delFromFreeElements(block);
             block.setState(new RelativeBlockState(block));
         }
+        else block.setCoordinates(point);
     }
 }
 

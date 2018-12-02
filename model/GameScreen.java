@@ -78,7 +78,7 @@ public class GameScreen implements Screen {
         long currentTime = TimeUtils.nanoTime();
 
         ArrayList<Rendered> objects = board.objectManager.getRenderedObjects();
-        if ((currentTime - lastRenderTime) > 1000000000) {
+        if ((currentTime - lastRenderTime) > 750000000) {
             lastRenderTime = TimeUtils.nanoTime();
             board.update();
             }

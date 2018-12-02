@@ -1,5 +1,6 @@
 package com.mygdx.game.model.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.mygdx.game.interfaces.Controllable;
 import com.mygdx.game.interfaces.Updatable;
 import com.mygdx.game.model.Board;
@@ -7,11 +8,13 @@ import com.mygdx.game.model.command.BaseCommand;
 import com.mygdx.game.model.utils.pill_states.FirstPillState;
 import com.mygdx.game.model.utils.pill_states.PillState;
 import com.mygdx.game.model.utils.Point;
+import com.mygdx.game.model.utils.pill_states.UnshowedPillState;
 
 public class Pill implements Controllable, Updatable {
 
     Board board;
     PillState state;
+    boolean showed;
     Block a,b;
 
     public Pill(Board board){
@@ -22,6 +25,7 @@ public class Pill implements Controllable, Updatable {
         this.b = new Block(new Point(boardWidth/2, boardHeidht - 1),  false, board);
         this.a.setRelativeBlock(b);
         this.b.setRelativeBlock(a);
+        this.showed = false;
         this.state = new FirstPillState(this);
     }
 
@@ -29,22 +33,31 @@ public class Pill implements Controllable, Updatable {
 
     public void update() {
 
-        Point a = new Point(this.getA().getCoordinates());
-        Point b = new Point(this.getB().getCoordinates());
-        a.setY(a.getY() - 1);
-        b.setY(b.getY() - 1);
-        if(board.isCellEmpty(a) && board.isCellEmpty(b)){
+        if (this.getBoard().getObjectManager().getFreeElements().isEmpty() && showed == false){
+            Gdx.app.log("I'm here", "AUUU");
+            this.showed = true;
+            this.getBoard().getObjectManager().addToRenderedObj(this.getA());
+            this.getBoard().getObjectManager().addToRenderedObj(this.getB());
+
+        }
+        if (showed){
+            Point a = new Point(this.getA().getCoordinates());
+            Point b = new Point(this.getB().getCoordinates());
+            a.setY(a.getY() - 1);
+            b.setY(b.getY() - 1);
+            if(board.isCellEmpty(a) && board.isCellEmpty(b)){
                 this.getA().setCoordinates(a);
                 this.getB().setCoordinates(b);
+            }
+            else {
+                board.setBoardElement(this.getA());
+                board.setBoardElement(this.getB());
+                board.getObjectManager().addToWillBeDeletedObj(this);
+                board.setCurrentpPill(board.getNextPill());
+                board.setNextPill(board.createPill());
+            }
         }
-        else {
-            board.setBoardElement(this.getA());
-            board.setBoardElement(this.getB());
-            board.getObjectManager().addToWillBeDeletedObj(this);
-            board.setCurrentpPill(board.getNextPill());
-            board.setNextPill(board.createPill());
-        }
-        }
+    }
 
     public void changeState(PillState state){
         this.state = state;
