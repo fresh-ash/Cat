@@ -6,12 +6,54 @@ import com.mygdx.game.model.utils.Point;
 
 public class Virus extends BaseObject {
 
-    public Virus(Point coordinates) {
-        super(coordinates);
+    boolean isAngree;
+    String fullImageName;
+
+    public Virus(Point coordinates, Board board) {
+        super(coordinates, board);
+        this.isAngree = false;
+        this.fullImageName = getImageName() + "Virus";
+    }
+
+
+
+    @Override
+    public void update() {
+        updateGraphic();
     }
 
     @Override
-    public void update(Board board) {
+    public void updateGraphic() {
 
+        if (isAngree){
+             this.setFullImageName(this.getImageName() + "VirusAngree");
+             this.setAngree(false);
+        }
+        else {
+
+            this.setFullImageName(this.getImageName() + "Virus");
+            this.setAngree(true);
+        }
+
+        if (isDeleted){
+            this.setFullImageName(this.getImageName() + "Deleted");
+        }
+    }
+
+    public boolean isAngree() {
+        return isAngree;
+    }
+
+    public void setAngree(boolean angree) {
+        isAngree = angree;
+    }
+
+    @Override
+    public String getFullImageName() {
+        return this.fullImageName;
+    }
+
+    public void setFullImageName(String fullImageName) {
+        this.fullImageName = fullImageName;
     }
 }

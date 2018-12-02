@@ -3,10 +3,9 @@ package com.mygdx.game.model;
 import java.util.Random;
 
 public enum Color {
-    EMPTY,
-    RED,
-    BLUE,
-    YELLOW;
+    red,
+    blue,
+    yellow;
 
     private static final Color[] VALUES = values();
     private static final int SIZE = VALUES.length;

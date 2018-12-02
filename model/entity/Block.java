@@ -6,39 +6,45 @@ import com.mygdx.game.interfaces.Movable;
 import com.mygdx.game.model.Board;
 import com.mygdx.game.model.Color;
 import com.mygdx.game.model.utils.Point;
+import com.mygdx.game.model.utils.block_states.BaseBlockState;
+import com.mygdx.game.model.utils.block_states.RelativeBlockState;
 
 public class Block extends BaseObject {
 
     boolean isFree;
     Block relativeBlock;
-    String textureName;
+    String fullImageName;
+    BaseBlockState state;
 
-    public Block(Point coordinates, boolean isFree) {
-        super(coordinates);
-        this.textureName = defineTexture();
+
+    public Block(Point coordinates, boolean isFree, Board board) {
+        super(coordinates, board);
         this.isFree = isFree;
+        this.fullImageName = this.getImageName() + "Block";
+        this.state = new RelativeBlockState(this);
+    }
+
+    public Block(Block block){
+        super(block.getCoordinates(), block.board);
+        this.isFree = block.isFree();
+        this.fullImageName = block.getFullImageName();
+        this.relativeBlock = block.getRelativeBlock();
+        this.state = block.state;
+
     }
 
     @Override
-    public void update(Board board) {
-        Gdx.app.log("Coordinates before update", getCoordinates().toString());
-        if(isFree && (board.isInFreeElementsList(this))){
-            Point nextCell = getNextPoint();
-            if(board.isCellEmpty(nextCell)){
-                this.setCoordinates(nextCell);
-            }
-            else {
-                board.setBoardElement(this);
-                board.deleteFreeElement(this);
-            }
-
-
-        }
+    public void update() {
+        this.getState().updateState();
+        updateGraphic();
     }
 
-    Point getNextPoint(){
-        return new Point(this.coordinates.getX(), this.coordinates.getY() - 1);
-    }
+
+
+
+
+
+
 
     public boolean isFree() {
         return isFree;
@@ -50,7 +56,15 @@ public class Block extends BaseObject {
 
     public void setFree(Board board){
         isFree = true;
-        board.addFreeElement(this);
+    }
+
+
+    public BaseBlockState getState() {
+        return state;
+    }
+
+    public void setState(BaseBlockState state) {
+        this.state = state;
     }
 
     @Override
@@ -60,31 +74,31 @@ public class Block extends BaseObject {
         Gdx.app.log("Info:" , "Set relative block free!");
     }
 
-    public String getTexture() {
-        return textureName;
-    }
-
-    public void setTexture(String textureName) {
-        this.textureName = textureName;
-    }
-
-    public String defineTexture(){
-        if(color == Color.BLUE){
-            return "blueBlock.png";
-        }
-        else if (color == Color.RED){
-            return "redBlock.png";
-        }
-        else {
-            return "yellowBlock.png";
-        }
-    }
-
     public Block getRelativeBlock() {
         return relativeBlock;
     }
 
     public void setRelativeBlock(Block relativeBlock) {
         this.relativeBlock = relativeBlock;
+    }
+
+    public void setFree(boolean free) {
+        isFree = free;
+    }
+
+    public String getFullImageName() {
+        return fullImageName;
+    }
+
+    public void setFullImageName(String fullImageName) {
+        this.fullImageName = fullImageName;
+    }
+
+
+    @Override
+    public void updateGraphic() {
+        if (isDeleted){
+            this.setFullImageName(getImageName() + "Deleted");
+        }
     }
 }

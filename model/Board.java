@@ -1,19 +1,24 @@
 package com.mygdx.game.model;
 
 import com.badlogic.gdx.Gdx;
+import com.mygdx.game.interfaces.Updatable;
 import com.mygdx.game.model.entity.BaseObject;
+import com.mygdx.game.model.entity.Block;
 import com.mygdx.game.model.entity.Pill;
 import com.mygdx.game.model.entity.Virus;
+import com.mygdx.game.model.utils.ObjectManager;
 import com.mygdx.game.model.utils.Point;
 
 import java.util.ArrayList;
 
 public class Board {
 
-    ArrayList<BaseObject> freeElements;
-    BaseObject[][] board;
-    ArrayList<BaseObject> renderedObjects;
+
+    Color[][] board;
+
+    ObjectManager objectManager;
     int boardWidth, boardHeight;
+
 
     Pill currentpPill;
     Pill nextPill;
@@ -21,46 +26,44 @@ public class Board {
     public Board(int boardWidth, int boardHeight){
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
-        this.board = new BaseObject[boardWidth][boardHeight];
-        this.currentpPill = createPill();
+        this.board = new Color[boardWidth][boardHeight];
+        this.objectManager = new ObjectManager(this);
+        setCurrentpPill(createPill());
         this.nextPill = createPill();
-        this.freeElements = new ArrayList<BaseObject>();
-        this.renderedObjects = new ArrayList<BaseObject>();
+        //this.objectManager.addToFreeElements(new Block(new Point(boardWidth - 4,boardHeight -1), true, this));
     }
 
 
     public void update(){
+        this.objectManager.addToUpdatableObj(this.objectManager.getWillBeAddedToUpdatable());
+        this.objectManager.delFromUpdatableObj(this.objectManager.getWillBeDeleted());
+        this.objectManager.getWillBeAddedToUpdatable().clear();
+        this.objectManager.getWillBeDeleted().clear();
 
+        ArrayList<Updatable> updateList = this.objectManager.getUpdatables();
+        for (Updatable updatable : updateList) {
+            updatable.update();
+        }
 
-
-        this.setCurrentpPill(this.getNextPill());
-        this.setNextPill(this.createPill());
     }
 
     public void setBoardElement(BaseObject object){
-        Point point = object.getCoordinates();
-        if (this.isCellEmpty(point)){
-            board[point.getX()][point.getY()] = object;
-            this.renderedObjects.add(object);
+            objectManager.addToWillBeAddedToUpdatableObj(object);
+            objectManager.addToRenderedObj(object);
+            board[object.getCoordinates().getX()][object.getCoordinates().getY()] = object.getColor();
+            prinBoard();
         }
+
+    public void setBoardElementAsEmpty(BaseObject object) {
+        this.board[object.getCoordinates().getX()][object.getCoordinates().getY()] = null;
     }
 
     public boolean isCellEmpty(Point point){
-        Gdx.app.debug("What Point was recivede:", point.toString());
-
         int x = point.getX();
         int y = point.getY();
 
-        if ((x >= 0) && (y >= 0) && (x < this.boardWidth) && (y < boardHeight) && board[x][y] == null){
-            return true;
-        }
-        else return false;
-    }
+        if (((x >= 0) && (y >= 0) && (x < this.boardWidth) && (y < this.boardHeight)) && board[x][y] == null){
 
-
-
-    public boolean isInFreeElementsList(BaseObject object){
-        if (freeElements.indexOf(object) >= 0){
             return true;
         }
         else return false;
@@ -71,13 +74,6 @@ public class Board {
         return pill;
     }
 
-    public void addFreeElement(BaseObject object){
-        this.freeElements.add(object);
-    }
-
-    public void deleteFreeElement(BaseObject object){
-        this.freeElements.remove(object);
-    }
 
     public Pill getCurrentpPill() {
         return currentpPill;
@@ -85,6 +81,17 @@ public class Board {
 
     public void setCurrentpPill(Pill currentpPill) {
         this.currentpPill = currentpPill;
+        this.objectManager.addToRenderedObj(this.currentpPill.getA());
+        this.objectManager.addToRenderedObj(this.currentpPill.getB());
+        this.objectManager.addToWillBeAddedToUpdatableObj(this.currentpPill);
+    }
+
+    public ObjectManager getObjectManager() {
+        return objectManager;
+    }
+
+    public void setObjectManager(ObjectManager objectManager) {
+        this.objectManager = objectManager;
     }
 
     public Pill getNextPill() {
@@ -111,26 +118,6 @@ public class Board {
         this.boardHeight = boardHeight;
     }
 
-    public ArrayList<BaseObject> getRenderedObj(){
-        for (int x = 0; x < this.boardWidth; x++) {
-            for (int y = 0; y < this.boardHeight; y++) {
-                BaseObject object = board[x][y];
-                if (object != null) {
-                    this.renderedObjects.add(object);
-
-                }
-            }
-        }
-        return this.renderedObjects;
-    }
-
-    public ArrayList<BaseObject> getFreeElements() {
-        return freeElements;
-    }
-
-    public void setFreeElements(ArrayList<BaseObject> freeElements) {
-        this.freeElements = freeElements;
-    }
 
     public void fillBoard(int level){
         int viruses = level * 10;
@@ -138,11 +125,26 @@ public class Board {
         while (viruses != 0){
             point = Point.getRandomPoint(this.boardWidth - 1, this.boardHeight/2 + level);
             if (this.isCellEmpty(point)){
-                this.setBoardElement(new Virus(point));
+                this.setBoardElement(new Virus(point, this));
                 viruses -= 1;
             }
 
         }
+    }
+
+    void prinBoard(){
+        String message = " ";
+        for (int x = 0; x < this.boardHeight; x++) {
+            message +="\n";
+            for (int y = 0; y < this.boardWidth; y++) {
+                    if (board[y][x] != null) {
+                        message += " [" + board[y][x].toString() + "] ";
+                    }
+                    else message += " [null] ";
+            }
+            }
+
+        Gdx.app.log("board", message);
     }
 
 

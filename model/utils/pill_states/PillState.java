@@ -1,16 +1,14 @@
-package com.mygdx.game.model.utils.states;
+package com.mygdx.game.model.utils.pill_states;
 
 import com.mygdx.game.model.Board;
 import com.mygdx.game.model.entity.Pill;
 
 public abstract class PillState {
 
-    Board board;
     Pill pill;
 
-    public PillState(Board board){
-        this.board = board;
-        this.pill = this.board.getCurrentpPill();
+    public PillState(Pill pill){
+        this.pill = pill;
     }
 
     public abstract void turn();

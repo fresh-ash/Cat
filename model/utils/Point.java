@@ -6,10 +6,11 @@ public class Point {
 
     private int x, y;
 
-    public Point() {
 
+    public Point(Point point){
+        this.x = point.getX();
+        this.y = point.getY();
     }
-
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
@@ -37,8 +38,4 @@ public class Point {
         return point;
     }
 
-    @Override
-    public String toString() {
-        return new String("Coordinates:   X: " + getX() + "Y: " + getY());
-    }
 }
