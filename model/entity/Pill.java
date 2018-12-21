@@ -2,6 +2,7 @@ package com.mygdx.game.model.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.mygdx.game.interfaces.Controllable;
+import com.mygdx.game.interfaces.Rendered;
 import com.mygdx.game.interfaces.Updatable;
 import com.mygdx.game.model.Board;
 import com.mygdx.game.model.command.BaseCommand;
@@ -10,7 +11,7 @@ import com.mygdx.game.model.utils.pill_states.PillState;
 import com.mygdx.game.model.utils.Point;
 import com.mygdx.game.model.utils.pill_states.UnshowedPillState;
 
-public class Pill implements Controllable, Updatable {
+public class Pill implements Controllable, Updatable, Rendered {
 
     Board board;
     PillState state;
@@ -34,10 +35,7 @@ public class Pill implements Controllable, Updatable {
     public void update() {
 
         if (this.getBoard().getObjectManager().getFreeElements().isEmpty() && showed == false){
-            Gdx.app.log("I'm here", "AUUU");
             this.showed = true;
-            this.getBoard().getObjectManager().addToRenderedObj(this.getA());
-            this.getBoard().getObjectManager().addToRenderedObj(this.getB());
 
         }
         if (showed){
@@ -63,7 +61,10 @@ public class Pill implements Controllable, Updatable {
         this.state = state;
     }
 
+    @Override
+    public void updateGraphic() {
 
+    }
 
 
     //Commands
@@ -153,7 +154,16 @@ public class Pill implements Controllable, Updatable {
         this.b = b;
     }
 
+    public boolean isShowed() {
+        if (showed == true){
+            return true;
+        }
+        else return false;
+    }
 
+    public void setShowed(boolean showed) {
+        this.showed = showed;
+    }
 
     public PillState getState() {
         return state;

@@ -26,6 +26,7 @@ public class Block extends BaseObject {
 
     public Block(Block block){
         super(block.getCoordinates(), block.board);
+        this.color = block.getColor();
         this.isFree = block.isFree();
         this.fullImageName = block.getFullImageName();
         this.relativeBlock = block.getRelativeBlock();
@@ -35,8 +36,14 @@ public class Block extends BaseObject {
 
     @Override
     public void update() {
-        this.getState().updateState();
-        updateGraphic();
+        if (isDeleted){
+            this.board.getObjectManager().addToWillBeDeletedObj(this);
+            this.board.getObjectManager().delFromRenderedObj(this);
+        }
+        else{
+            this.getState().updateState();
+            updateGraphic();
+        }
     }
 
 
@@ -99,6 +106,7 @@ public class Block extends BaseObject {
     public void updateGraphic() {
         if (isDeleted){
             this.setFullImageName(getImageName() + "Deleted");
+
         }
     }
 }

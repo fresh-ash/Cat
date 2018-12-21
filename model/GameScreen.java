@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
 
         sprite = new BlockSpriteManager(atlas);
         board = new Board(11,20);
-        board.fillBoard(4);
+        board.fillBoard(1);
         this.downCommand = new Pill.DownCommand();
         this.upCommand = new Pill.UpCommand();
         this.leftCommand = new Pill.Leftcommand();
@@ -78,7 +78,7 @@ public class GameScreen implements Screen {
         long currentTime = TimeUtils.nanoTime();
 
         ArrayList<Rendered> objects = board.objectManager.getRenderedObjects();
-        if ((currentTime - lastRenderTime) > 750000000) {
+        if ((currentTime - lastRenderTime) > 1000000000) {
             lastRenderTime = TimeUtils.nanoTime();
             board.update();
             }

@@ -19,7 +19,11 @@ public class Virus extends BaseObject {
 
     @Override
     public void update() {
-        updateGraphic();
+        if (isDeleted){
+            this.board.getObjectManager().addToWillBeDeletedObj(this);
+            this.board.getObjectManager().delFromRenderedObj(this);
+        }
+        else updateGraphic();
     }
 
     @Override

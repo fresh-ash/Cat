@@ -1,5 +1,6 @@
 package com.mygdx.game.model.utils.pill_states;
 
+import com.badlogic.gdx.Gdx;
 import com.mygdx.game.model.entity.Block;
 import com.mygdx.game.model.entity.Pill;
 import com.mygdx.game.model.utils.Point;
@@ -40,11 +41,10 @@ public class SecondPillState extends PillState {
     }
 
     void changeBlocks(){
-        Block c = new Block(pill.getA());
-        pill.getBoard().getObjectManager().delFromRenderedObj(pill.getA());
-        pill.getBoard().getObjectManager().addToRenderedObj(c);
+        Block c = pill.getA();
         pill.setA(pill.getB());
         pill.setB(c);
+        Gdx.app.log("I:", pill.getA().getColor().toString() + pill.getB().getColor().toString());
 
     }
 

@@ -19,6 +19,7 @@ public abstract class BaseObject implements Updatable, Rendered {
         this.coordinates = coordinates;
         this.color = Color.getRandomColor();
         this.board = board;
+        this.board.getObjectManager().addToWillBeAddedToUpdatableObj(this);
         this.isDeleted  = false;
         this.baseImageName = this.getImageName();
     }
@@ -66,8 +67,7 @@ public abstract class BaseObject implements Updatable, Rendered {
 
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-        Gdx.app.log("call SetDeleted():" , "I'm deleted!" );
+        this.isDeleted = deleted;
     }
 
 

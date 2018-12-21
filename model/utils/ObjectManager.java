@@ -3,6 +3,7 @@ package com.mygdx.game.model.utils;
 import com.mygdx.game.interfaces.Rendered;
 import com.mygdx.game.interfaces.Updatable;
 import com.mygdx.game.model.Board;
+import com.mygdx.game.model.entity.Pill;
 
 import java.util.ArrayList;
 
@@ -49,10 +50,15 @@ public class ObjectManager {
     public void addToUpdatableObj(Updatable obj) {
         if (!isInUpdatableObj(obj)){
             this.updatables.add(obj);
+            if ((!(obj instanceof Pill)) && (!(isInRenderedObj((Rendered) obj)))){
+                this.renderedObjects.add((Rendered) obj);
+            }
         }
     }
     public void addToUpdatableObj(ArrayList<Updatable> list) {
-        this.updatables.addAll(list);
+        for ( Updatable obj : list){
+            addToUpdatableObj(obj);
+        }
     }
     public void delFromUpdatableObj(Updatable obj) {
         this.updatables.remove(obj);
